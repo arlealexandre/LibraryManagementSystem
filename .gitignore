@@ -483,4 +483,4 @@ $RECYCLE.BIN/
 
 # appsettings.json files
 
-appsettings*.json
+LibraryManagementSystem.Api/appsettings*.json
