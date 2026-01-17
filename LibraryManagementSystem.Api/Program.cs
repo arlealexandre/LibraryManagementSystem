@@ -6,9 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
-var databaseConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Retrieve the connection string from appsettings.json, throw an error if it's missing
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(databaseConnectionString));
+// Register the ApplicationDbContext in the Dependency Injection container using the SQL Server provider
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
