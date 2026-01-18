@@ -1,6 +1,6 @@
 ﻿namespace LibraryManagementSystem.Tests;
 
-public class UnitTest1
+public class BookValidationUnitTests
 {
 
     private Book CreateValidBook()
