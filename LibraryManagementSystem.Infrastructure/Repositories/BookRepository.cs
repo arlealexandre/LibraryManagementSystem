@@ -1,6 +1,8 @@
 using LibraryManagementSystem.Application.Interfaces;
+using LibraryManagementSystem.Domain.Models;
 using LibraryManagementSystem.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LibraryManagementSystem.Infrastructure.Repositories;
 
@@ -40,11 +42,28 @@ public class BookRepository : IBookRepository
         );
     }
 
-    public async Task<IEnumerable<Book>> GetAllAsync()
+    public async Task<IEnumerable<Book>> GetAllAsync(int? authorId, BookSortByCriteria sortBy)
     {
-        return await _context.Books
+
+        IQueryable<Book> query = _context.Books
             .Include(b => b.Illustrator)
             .Include(b => b.Authors)
-            .ToListAsync();
+            .Include(b => b.Genres);
+
+        if (authorId.HasValue)
+        {
+            query = query.Where(b => b.Authors.Any(a => a.Id == authorId.Value));
+        }
+
+        query = sortBy switch
+        {
+            BookSortByCriteria.ID => query.OrderBy(b => b.Id),
+            BookSortByCriteria.TITLE => query.OrderBy(b => b.Title),
+            BookSortByCriteria.PUBLICATION_YEAR => query.OrderBy(b => b.PublicationYear),
+            BookSortByCriteria.GENRE => query.OrderBy(b => b.Genres.First().Name),
+            _ => query.OrderBy(b => b.Id)
+        };
+
+        return await query.ToListAsync();
     }
 }

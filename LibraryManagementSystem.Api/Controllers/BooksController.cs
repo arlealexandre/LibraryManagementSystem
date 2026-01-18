@@ -1,5 +1,6 @@
 using LibraryManagementSystem.Application.DTOs;
 using LibraryManagementSystem.Application.UseCases;
+using LibraryManagementSystem.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryManagementSystem.Api.Controllers;
@@ -21,11 +22,11 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> ListBooks()
+    public async Task<IActionResult> ListBooks([FromQuery] int? authorId, [FromQuery] BookSortByCriteria sortBy = BookSortByCriteria.ID)
     {
         try
         {
-            var result = await _listBooks.ExecuteAsync();
+            var result = await _listBooks.ExecuteAsync(authorId, sortBy);
             return Ok(result);
         }
         catch (Exception e)

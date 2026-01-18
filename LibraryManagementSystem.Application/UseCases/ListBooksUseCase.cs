@@ -1,5 +1,6 @@
 using LibraryManagementSystem.Application.DTOs;
 using LibraryManagementSystem.Application.Interfaces;
+using LibraryManagementSystem.Domain.Models;
 
 namespace LibraryManagementSystem.Application.UseCases;
 
@@ -12,9 +13,9 @@ public class ListBooksUseCase
         _repository = repository;
     }
 
-    public async Task<ListBooksResponseDTO> ExecuteAsync()
+    public async Task<ListBooksResponseDTO> ExecuteAsync(int? authorId, BookSortByCriteria sortBy)
     {
-        var books = await _repository.GetAllAsync();
+        var books = await _repository.GetAllAsync(authorId, sortBy);
 
         var response = new ListBooksResponseDTO
         {
